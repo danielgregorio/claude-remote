@@ -1,0 +1,15 @@
+{
+  "name": "claude-remote",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": ["packages/protocol", "packages/bridge"],
+  "scripts": {
+    "dev:bridge": "npm run dev -w packages/bridge",
+    "build:protocol": "npm run build -w packages/protocol",
+    "build:bridge": "npm run build -w packages/bridge",
+    "build": "npm run build:protocol && npm run build:bridge",
+    "test": "npm run test --workspaces --if-present"
+  },
+  "license": "MIT",
+  "engines": { "node": ">=20.0.0" }
+}
