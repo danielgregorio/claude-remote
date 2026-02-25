@@ -1,0 +1,10 @@
+name: noise_kk_test
+description: Pure Dart test harness for Noise KK cross-platform validation
+publish_to: 'none'
+
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  cryptography: ^2.7.0
+  test: ^1.25.0
