@@ -1,0 +1,57 @@
+{
+  "_comment": "Noise_KK_25519_ChaChaPoly_BLAKE2b test vectors for cross-platform verification",
+  "_generated": "2026-02-25T01:47:18.421Z",
+  "keys": {
+    "initiator": {
+      "seed": "696e69746961746f722d736565642d666f722d746573742d766563746f727321",
+      "publicKey": "6d4410ca67a3f6a4dadb1845e0772953084a289b240d28ea67054946457e2605",
+      "secretKey": "0a7fbb6f9469d4532a714bedea21510d7ea14c2259de9ad28406ef0258f0056f"
+    },
+    "responder": {
+      "seed": "726573706f6e6465722d736565642d666f722d746573742d766563746f727321",
+      "publicKey": "3cbb87772239b07cc0ffb150d1f3e6fbe8d01e1fba9db21c0c529a9477810a46",
+      "secretKey": "f25d152dd1b84459691980b6fc0234b0332fcfd772269fc753befeb2db5d5069"
+    }
+  },
+  "psk": "70736b2d666f722d746573742d766563746f72732d3030303030303030303030",
+  "prologue": "f29fbd42cb0cc3ffccdc3ee0631cead2bfce5160071d5dc9f47a8c5086f3dbc445e359f33ad8af94db3f7ade1324666db47c8ee9cff256ea7ff9f8f5da128878",
+  "handshake": {
+    "message1": {
+      "bytes": "218f1fd2a47c57c2ec930c4d4d0e461bca4478f8c4faad6fa918850d3b89153a404245acb6da88bdb5eb1779c89955c3",
+      "length": 48,
+      "ephemeralPublicKey": "218f1fd2a47c57c2ec930c4d4d0e461bca4478f8c4faad6fa918850d3b89153a",
+      "encryptedPayload": "404245acb6da88bdb5eb1779c89955c3"
+    },
+    "message2": {
+      "bytes": "787c202b7a9b3cc747c076e39bc1c4bc9ac5fee7dd3970e74c52568b958ed853e2b213f793cdb56d5cb7432f34f96432",
+      "length": 48,
+      "ephemeralPublicKey": "787c202b7a9b3cc747c076e39bc1c4bc9ac5fee7dd3970e74c52568b958ed853",
+      "encryptedPayload": "e2b213f793cdb56d5cb7432f34f96432"
+    }
+  },
+  "transport": {
+    "_note": "After handshake, initiator tx/responder rx use one key; responder tx/initiator rx use another",
+    "initiatorToResponder": [
+      {
+        "nonce": 0,
+        "plaintext": "48656c6c6f2066726f6d20696e69746961746f7221",
+        "plaintextUtf8": "Hello from initiator!",
+        "ciphertext": "23da3af88df1589f8b8c3011b7cbcfa19f9b73cd7c70a029ff97e4457729305ad17a3d102f"
+      },
+      {
+        "nonce": 1,
+        "plaintext": "5365636f6e64206d6573736167652066726f6d20696e69746961746f72",
+        "plaintextUtf8": "Second message from initiator",
+        "ciphertext": "202f12167571d568065618a0ed48d56514d17783ea3714ed98db1febcce905512b61e5b3df416ff23889ca88cf"
+      }
+    ],
+    "responderToInitiator": [
+      {
+        "nonce": 0,
+        "plaintext": "48656c6c6f2066726f6d20726573706f6e64657221",
+        "plaintextUtf8": "Hello from responder!",
+        "ciphertext": "961ce8ec43caa119049f9bb3568aa7f68c33be9162dd34254a58abd6b35d08067ed0e63e45"
+      }
+    ]
+  }
+}
