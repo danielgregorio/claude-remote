@@ -10,6 +10,10 @@ class AppSettings {
   final bool notifyOnError;
   final bool autoReconnect;
 
+  /// When true, only pinned sessions trigger notifications.
+  /// When false, all sessions trigger notifications.
+  final bool notifyOnlyPinned;
+
   const AppSettings({
     this.notificationsEnabled = true,
     this.notifyOnPermission = true,
@@ -17,6 +21,7 @@ class AppSettings {
     this.notifyOnComplete = false,
     this.notifyOnError = true,
     this.autoReconnect = true,
+    this.notifyOnlyPinned = false,
   });
 
   AppSettings copyWith({
@@ -26,6 +31,7 @@ class AppSettings {
     bool? notifyOnComplete,
     bool? notifyOnError,
     bool? autoReconnect,
+    bool? notifyOnlyPinned,
   }) =>
       AppSettings(
         notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
@@ -34,6 +40,7 @@ class AppSettings {
         notifyOnComplete: notifyOnComplete ?? this.notifyOnComplete,
         notifyOnError: notifyOnError ?? this.notifyOnError,
         autoReconnect: autoReconnect ?? this.autoReconnect,
+        notifyOnlyPinned: notifyOnlyPinned ?? this.notifyOnlyPinned,
       );
 }
 
@@ -57,6 +64,7 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
       notifyOnComplete: await _readBool('notify_on_complete', false),
       notifyOnError: await _readBool('notify_on_error', true),
       autoReconnect: await _readBool('auto_reconnect', true),
+      notifyOnlyPinned: await _readBool('notify_only_pinned', false),
     );
   }
 
@@ -98,6 +106,11 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
   Future<void> setAutoReconnect(bool value) async {
     await _writeBool('auto_reconnect', value);
     state = state.copyWith(autoReconnect: value);
+  }
+
+  Future<void> setNotifyOnlyPinned(bool value) async {
+    await _writeBool('notify_only_pinned', value);
+    state = state.copyWith(notifyOnlyPinned: value);
   }
 }
 

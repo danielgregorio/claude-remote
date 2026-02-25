@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/app_message.dart';
 import '../../models/session_info.dart';
 import '../../providers/connection_provider.dart';
+import '../../providers/focused_session_provider.dart';
 import '../../providers/session_detail_provider.dart';
 import '../../providers/sessions_provider.dart';
 import '../../theme.dart';
@@ -87,10 +88,22 @@ class _SessionDetailScreenState extends ConsumerState<SessionDetailScreen> {
       });
     });
 
+    final isPinned = ref.watch(isSessionPinnedProvider(widget.sessionId));
+
     return Scaffold(
       appBar: AppBar(
         title: Text(session?.name ?? 'Session'),
         actions: [
+          IconButton(
+            icon: Icon(
+              isPinned ? Icons.push_pin : Icons.push_pin_outlined,
+              color: isPinned ? AppColors.active : Colors.white54,
+            ),
+            tooltip: isPinned ? 'Unpin session' : 'Pin session',
+            onPressed: () => ref
+                .read(focusedSessionsProvider.notifier)
+                .toggle(widget.sessionId),
+          ),
           if (session != null)
             Padding(
               padding: const EdgeInsets.all(8),

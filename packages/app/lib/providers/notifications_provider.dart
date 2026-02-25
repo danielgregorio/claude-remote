@@ -6,6 +6,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../crypto/key_store.dart';
 import 'connection_provider.dart';
+import 'focused_session_provider.dart';
+import 'settings_provider.dart';
 
 /// ntfy notification event from the bridge.
 class NtfyEvent {
@@ -77,7 +79,7 @@ class NtfyPoller {
   }
 }
 
-/// Local notification display service.
+/// Local notification display service with session filtering.
 class NotificationService {
   final FlutterLocalNotificationsPlugin _plugin =
       FlutterLocalNotificationsPlugin();
@@ -104,7 +106,19 @@ class NotificationService {
   }
 
   /// Show a local notification for a bridge event.
-  Future<void> showNotification(NtfyEvent event) async {
+  ///
+  /// When [notifyOnlyPinned] is true, only events from sessions in
+  /// [pinnedSessionIds] will produce notifications.
+  Future<void> showNotification(
+    NtfyEvent event, {
+    bool notifyOnlyPinned = false,
+    Set<String> pinnedSessionIds = const {},
+  }) async {
+    // Filter: skip if "only pinned" is on and this session isn't pinned
+    if (notifyOnlyPinned && !pinnedSessionIds.contains(event.session)) {
+      return;
+    }
+
     await initialize();
 
     String title;

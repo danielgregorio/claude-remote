@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../models/session_info.dart';
 import '../../theme.dart';
@@ -7,14 +8,32 @@ import '../../widgets/status_badge.dart';
 class SessionCard extends StatelessWidget {
   final SessionInfo session;
   final VoidCallback? onTap;
+  final VoidCallback? onTogglePin;
+  final bool isPinned;
 
-  const SessionCard({super.key, required this.session, this.onTap});
+  const SessionCard({
+    super.key,
+    required this.session,
+    this.onTap,
+    this.onTogglePin,
+    this.isPinned = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Card(
+      shape: isPinned
+          ? RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: BorderSide(color: AppColors.active.withAlpha(100), width: 1),
+            )
+          : null,
       child: InkWell(
         onTap: onTap,
+        onLongPress: () {
+          HapticFeedback.mediumImpact();
+          onTogglePin?.call();
+        },
         borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -26,11 +45,21 @@ class SessionCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      session.name,
-                      style: Theme.of(context).textTheme.titleMedium,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    Row(
+                      children: [
+                        if (isPinned) ...[
+                          Icon(Icons.push_pin, size: 14, color: AppColors.active),
+                          const SizedBox(width: 4),
+                        ],
+                        Expanded(
+                          child: Text(
+                            session.name,
+                            style: Theme.of(context).textTheme.titleMedium,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 4),
                     Row(

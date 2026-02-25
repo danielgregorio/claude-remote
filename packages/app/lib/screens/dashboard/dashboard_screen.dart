@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../models/app_message.dart';
 import '../../models/connection_state.dart';
 import '../../providers/connection_provider.dart';
+import '../../providers/focused_session_provider.dart';
 import '../../providers/sessions_provider.dart';
 import '../../widgets/status_badge.dart';
 import 'connection_indicator.dart';
@@ -38,8 +39,17 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   Widget build(BuildContext context) {
     final connState = ref.watch(currentConnectionStateProvider);
     final sessions = ref.watch(sessionsProvider);
+    final pinnedIds = ref.watch(focusedSessionsProvider);
     final activeSessions = ref.watch(activeSessionsProvider);
     final completedSessions = ref.watch(completedSessionsProvider);
+
+    // Separate pinned sessions from the rest
+    final pinnedSessions =
+        sessions.where((s) => pinnedIds.contains(s.id)).toList();
+    final unpinnedActive =
+        activeSessions.where((s) => !pinnedIds.contains(s.id)).toList();
+    final unpinnedCompleted =
+        completedSessions.where((s) => !pinnedIds.contains(s.id)).toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -60,27 +70,49 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             : ListView(
                 padding: const EdgeInsets.all(16),
                 children: [
-                  if (activeSessions.isNotEmpty) ...[
-                    _SectionHeader(title: 'Active', count: activeSessions.length),
+                  if (pinnedSessions.isNotEmpty) ...[
+                    _SectionHeader(title: 'Pinned', count: pinnedSessions.length),
                     const SizedBox(height: 8),
-                    ...activeSessions.map((s) => Padding(
+                    ...pinnedSessions.map((s) => Padding(
                           padding: const EdgeInsets.only(bottom: 8),
                           child: SessionCard(
                             session: s,
+                            isPinned: true,
                             onTap: () => context.push('/session/${s.id}'),
+                            onTogglePin: () => ref
+                                .read(focusedSessionsProvider.notifier)
+                                .toggle(s.id),
                           ),
                         )),
                     const SizedBox(height: 16),
                   ],
-                  if (completedSessions.isNotEmpty) ...[
-                    _SectionHeader(
-                        title: 'Completed', count: completedSessions.length),
+                  if (unpinnedActive.isNotEmpty) ...[
+                    _SectionHeader(title: 'Active', count: unpinnedActive.length),
                     const SizedBox(height: 8),
-                    ...completedSessions.map((s) => Padding(
+                    ...unpinnedActive.map((s) => Padding(
                           padding: const EdgeInsets.only(bottom: 8),
                           child: SessionCard(
                             session: s,
                             onTap: () => context.push('/session/${s.id}'),
+                            onTogglePin: () => ref
+                                .read(focusedSessionsProvider.notifier)
+                                .toggle(s.id),
+                          ),
+                        )),
+                    const SizedBox(height: 16),
+                  ],
+                  if (unpinnedCompleted.isNotEmpty) ...[
+                    _SectionHeader(
+                        title: 'Completed', count: unpinnedCompleted.length),
+                    const SizedBox(height: 8),
+                    ...unpinnedCompleted.map((s) => Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: SessionCard(
+                            session: s,
+                            onTap: () => context.push('/session/${s.id}'),
+                            onTogglePin: () => ref
+                                .read(focusedSessionsProvider.notifier)
+                                .toggle(s.id),
                           ),
                         )),
                   ],
